@@ -248,6 +248,8 @@ StrictForm:
 	jp z, .wild_sandshrew
 	cp ONIX
 	jp z, .wild_onix
+	cp POLITOED
+	jp z, .wild_politoed
 
 	; Otherwise, we're done
 	jp .done
@@ -319,6 +321,21 @@ StrictForm:
 	and GENDER_MASK ;erase form
 	or $02 ;enforce form 2 (crystal)
 	or %11000000 ;enforce male for crystal onix
+	jp .store_enforced_form
+
+;UnnamedIsland3 fixed Politoed encounter should be shiny 
+.wild_politoed
+	ld a, [MapGroup]
+	cp 16 ; Map GROUP 16
+	jr nz, .done
+	ld a, [MapNumber]
+	cp 26 ; UnnamedIsland3
+	jr nz, .done
+	ld a, [EnemyMonLevel] ;extra check, so only level 50 Politoed in this map are enforced shiny
+	cp 50
+	jr nz, .done
+	ld a, [EnemyMonPersonality]
+	or SHINY_MASK ;enforce shiny for the Unnamed Island 3 Politoed
 	jp .store_enforced_form
 
 .store_enforced_form
