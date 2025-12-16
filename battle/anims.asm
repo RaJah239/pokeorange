@@ -2709,55 +2709,56 @@ BattleAnim_Guillotine: ; ca6cc
 ; ca700
 
 BattleAnim_Dazzlingleam:
-    anim_2gfx ANIM_GFX_SPEED, ANIM_GFX_HIT
-    anim_bgeffect ANIM_BG_ALTERNATE_HUES, $0, $2, $0
+	anim_1gfx ANIM_GFX_SHINE
+	anim_bgeffect ANIM_BG_07, $0, $0, $0
+.loop1
+	anim_sound 0, 0, SFX_METRONOME
+	anim_obj ANIM_OBJ_9D, 3, 0, 8, 0, $0
+	anim_wait 5
+	anim_obj ANIM_OBJ_9D, 7, 0,  13, 0, $0
+	anim_wait 5
+	anim_obj ANIM_OBJ_9D, 3, 0,  13, 0, $0
+	anim_wait 5
+	anim_obj ANIM_OBJ_9D, 7, 0, 8, 0, $0
+	anim_wait 5
+	anim_obj ANIM_OBJ_9D, 5, 0, 10, 4, $0
+	anim_wait 5
+	anim_loop 2, .loop1
+	anim_wait 32
+
+	anim_1gfx ANIM_GFX_SPEED
+	anim_call BattleAnim_FollowEnemyFeet_0
+	anim_bgeffect ANIM_BG_1A, $0, $1, $20
+	anim_bgeffect ANIM_BG_07, $0, $2, $0
+	anim_obj ANIM_OBJ_6C, 136, 56, $0
+	anim_obj ANIM_OBJ_6C, 136, 56, $8
+	anim_obj ANIM_OBJ_6C, 136, 56, $10
+	anim_obj ANIM_OBJ_6C, 136, 56, $18
+	anim_obj ANIM_OBJ_6C, 137, 56, $20
+	anim_obj ANIM_OBJ_6C, 136, 56, $28
+	anim_obj ANIM_OBJ_6C, 136, 56, $30
+	anim_obj ANIM_OBJ_6C, 136, 56, $38
 .loop
-    anim_sound 0, 1, SFX_MOONLIGHT
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $0
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $8
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $10
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $18
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $20
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $28
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $30
-    anim_wait 2
-    anim_obj ANIM_OBJ_6C, 44, 88, $38
-    anim_loop 2, .loop
-    anim_wait 32
-    anim_call BattleAnim_FollowEnemyFeet_0
-    anim_bgeffect ANIM_BG_1A, $0, $1, $20
-    anim_bgeffect ANIM_BG_07, $0, $2, $0
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $0
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $8
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $10
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $18
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $20
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $28
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $30
-    anim_obj ANIM_OBJ_TWINKLE, 44, 88, $38
-    anim_sound 0, 0, SFX_FLASH
-    anim_bgeffect ANIM_BG_FLASH_INVERTED, $0, $6, $20
-    anim_call BattleAnim_ShowMon_0
-    anim_wait 1
-    anim_incobj  2
-    anim_incobj  3
-    anim_incobj  4
-    anim_incobj  5
-    anim_incobj  6
-    anim_incobj  7
-    anim_incobj  8
-    anim_incobj  9
-    anim_wait 16
-    anim_obj ANIM_OBJ_00, 136, 56, $0
-    anim_wait 32
-    anim_ret
+	anim_sound 0, 0, SFX_FLASH
+	anim_wait 8
+	anim_loop 12, .loop
+	anim_incbgeffect ANIM_BG_1A
+	anim_call BattleAnim_ShowMon_0
+	anim_wait 1
+	anim_incobj  2
+	anim_incobj  3
+	anim_incobj  4
+	anim_incobj  5
+	anim_incobj  6
+	anim_incobj  7
+	anim_incobj  8
+	anim_incobj  9
+	anim_wait 16
+	anim_1gfx ANIM_GFX_HIT
+	anim_obj ANIM_OBJ_00, 136, 56, $0
+	anim_wait 32
+	anim_ret
+
 	
 BattleAnim_Flash: ; ca700
 	anim_1gfx ANIM_GFX_SPEED
