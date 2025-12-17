@@ -142,7 +142,7 @@ FrontpicPredef: ; 5108b
 	xor a
 	ld [hBGMapMode], a
 	call _GetFrontpic
-	call Function51103
+	call GetAnimatedEnemyFrontpic
 	pop af
 	ld [rSVBK], a
 	ret
@@ -163,7 +163,7 @@ _GetFrontpic: ; 510a5
 	pop bc
 	ld hl, wDecompressScratch
 	ld de, wDecompressScratch + $80 tiles
-	call Function512ab
+	call PadFrontpic
 	pop hl
 	push hl
 	ld de, wDecompressScratch
@@ -285,7 +285,7 @@ GetFrontpicPointer: ; 510d7
 	pop bc
 	ret
 
-Function51103: ; 51103
+GetAnimatedEnemyFrontpic: ; 51103
 	ld a, $1
 	ld [rVBK], a
 	push hl
@@ -317,7 +317,7 @@ Function51103: ; 51103
 
 	push hl
 	push bc
-	call Function5114f
+	call LoadFrontpicTiles
 	pop bc
 	pop hl
 	ld de, wDecompressScratch
@@ -328,7 +328,7 @@ Function51103: ; 51103
 	ld [rVBK], a
 	ret
 
-Function5114f: ; 5114f
+LoadFrontpicTiles: ; 5114f
 	ld hl, wDecompressScratch
 	swap c
 	ld a, c
@@ -576,7 +576,7 @@ FixBackpicAlignment: ; 5127c
 	pop de
 	ret
 
-Function512ab: ; 512ab
+PadFrontpic: ; 512ab
 	ld a, b
 	cp 6
 	jr z, .six
