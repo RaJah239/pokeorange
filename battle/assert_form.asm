@@ -237,7 +237,7 @@ AssertPlayerMonType:
 StrictForm:
 	ld a, [wBattleMode]
 	cp TRAINER_BATTLE
-	jp z, .done
+	jp z, .trainer
 	; Grab the BaseData for this species
 	ld a, [EnemyMonSpecies]
 	cp VULPIX
@@ -336,6 +336,14 @@ StrictForm:
 	jr nz, .done
 	ld a, [EnemyMonPersonality]
 	or SHINY_MASK ;enforce shiny for the Unnamed Island 3 Politoed
+	jp .store_enforced_form
+
+;for trainers, we just need to load and copy the personality byte (gender, shininess, pinkness, form)
+.trainer
+	ld a, [wCurPartyMon]
+	ld hl, OTPartyMon1Personality
+	call GetPartyLocation ; bc = PartyMon[wCurPartyMon] - PartyMons
+	ld a, [hl] ;personality value is loaded in a
 	jp .store_enforced_form
 
 .store_enforced_form
