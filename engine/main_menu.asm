@@ -10,6 +10,7 @@ MainMenu: ; 49cdc
 	call MainMenu_GetWhichMenu
 	ld [wWhichIndexSet], a
 	call MainMenu_PrintCurrentTimeAndDay
+	call MainMenu_PrintVersion
 	ld hl, .MenuDataHeader
 	call LoadMenuDataHeader
 	call MainMenuJoypadLoop
@@ -98,6 +99,33 @@ MainMenuJoypadLoop: ; 49de4
 	scf
 	ret
 ; 49e09
+
+MainMenu_PrintVersion:
+	hlcoord 0, 12
+	ld de, .pokeorangeVersion1
+	call PlaceString
+	hlcoord 0, 13
+	ld de, .pokeorangeVersion2
+	jp PlaceString
+
+.pokeorangeVersion1
+if DEF(PSS)
+	if DEF(DEBUG)
+		db "           PSS-Debug@"
+	endc
+		db "                 PSS@"
+else
+    if DEF(DEBUG)
+		db "               Debug@"
+	endc
+		db "@"
+endc
+
+;day-month-year format, try to update on every build. Could use the __DATE__ macro but it'd be confusing to show a date in this screen since the RTC time is also shown here.
+.pokeorangeVersion2
+		;db __DATE__
+		;db "@"
+		db "             v171225@"
 
 MainMenu_PrintCurrentTimeAndDay: ; 49e09
 	ld a, [wSaveFileExists]
