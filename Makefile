@@ -3,6 +3,9 @@ TITLE = PKMNORANGE
 MCODE = PKOR
 ROMVERSION = 0x32
 FILLER = 0xff
+BUILD_DAY   := $(shell date +%d)
+BUILD_MONTH := $(shell date +%m)
+BUILD_YEAR  := $(shell date +%y)
 
 
 ifneq ($(wildcard rgbds/.*),)
@@ -11,7 +14,7 @@ else
 RGBDS_DIR =
 endif
 
-RGBASM_FLAGS =
+RGBASM_FLAGS = -D BUILDDAY=$(BUILD_DAY) -D BUILDMONTH=$(BUILD_MONTH) -D BUILDYEAR=$(BUILD_YEAR)
 RGBLINK_FLAGS = -n $(ROM_NAME).sym -m $(ROM_NAME).map -l $(ROM_NAME).link -p $(FILLER)
 RGBFIX_FLAGS = -Cjv -t $(TITLE) -i $(MCODE) -n $(ROMVERSION) -p $(FILLER) -k 01 -l 0x33 -m 0x10 -r 3
 

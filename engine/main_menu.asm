@@ -104,9 +104,21 @@ MainMenu_PrintVersion:
 	hlcoord 0, 12
 	ld de, .pokeorangeVersion1
 	call PlaceString
-	hlcoord 0, 13
-	ld de, .pokeorangeVersion2
-	jp PlaceString
+	hlcoord 14, 13
+	
+	ld de, wd265
+	ld c, 2
+	ld b, PRINTNUM_LEADINGZEROS | 1
+	
+	ld a, BUILDDAY
+	ld [wd265], a
+	call PrintNum
+	ld a, BUILDMONTH
+	ld [wd265], a
+	call PrintNum
+	ld a, BUILDYEAR
+	ld [wd265], a
+	jp PrintNum
 
 .pokeorangeVersion1
 if DEF(PSS)
@@ -120,12 +132,6 @@ else
 	endc
 		db "@"
 endc
-
-;day-month-year format, try to update on every build. Could use the __DATE__ macro but it'd be confusing to show a date in this screen since the RTC time is also shown here.
-.pokeorangeVersion2
-		;db __DATE__
-		;db "@"
-		db "             v171225@"
 
 MainMenu_PrintCurrentTimeAndDay: ; 49e09
 	ld a, [wSaveFileExists]
