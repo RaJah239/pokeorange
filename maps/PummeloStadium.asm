@@ -183,13 +183,21 @@ endc
 	opentext
 	writetext RedBattleText
 	waitbutton
+	writetext HealPartyText
+	yesorno
+	iffalse .skipHeal
+	
+	;Heal party
 	closetext
 	special FadeOutPalettes
 	playmusic MUSIC_HEAL
 	special HealParty
 	pause 60
 	special Special_FadeInQuickly
-	special RestartMapMusic
+	;special RestartMapMusic
+	
+.skipHeal
+	closetext
 	blackoutmod PUMMELO_ISLAND
 	winlosstext RedWinLoss, 0
 	loadtrainer RED, 1
@@ -344,9 +352,15 @@ RedBattleText:
 	text "Finally, we have a"
 	line "new challenger for"
 	cont "you, CHAMPION!"
-	
-	para "We will heal your"
-	line "party for this."
+
+	para "How will you fare"
+	line "against KANTO's"
+	cont "CHAMPION?"
+	done
+
+HealPartyText:
+	text "Would you like to"
+	line "heal your party?"
 	done
 
 CissyWinLoss:

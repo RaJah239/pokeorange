@@ -135,6 +135,7 @@ if def(DEBUG)
 	giveitem FIRE_ORB
 	giveitem ICE_ORB
 	giveitem SHELL_BOX
+	giveitem SHINY_CHARM
 	givecoins 9999
 	giveshells 13
 	givemoney 0, 195000
