@@ -1,23 +1,23 @@
 	const_def
-	const NORMAL
-	const FIGHTING
-	const FLYING
-	const POISON
-	const GROUND
-	const ROCK
-	const BUG
-	const DARK
-	const STEEL
-	const CRYSTAL
-	const FIRE
-	const WATER
-	const GRASS
-	const ELECTRIC
-	const PSYCHIC
-	const ICE
-	const DRAGON
-	const GHOST
-	const FAIRY
+	const NORMAL	;00
+	const FIGHTING	;01
+	const FLYING	;02
+	const POISON	;03
+	const GROUND	;04
+	const ROCK		;05
+	const BUG		;06
+	const DARK		;07
+	const STEEL		;08
+	const CRYSTAL	;09
+	const FIRE		;0A
+	const WATER		;0B
+	const GRASS		;0C
+	const ELECTRIC	;0D
+	const PSYCHIC	;0E
+	const ICE		;0F
+	const DRAGON	;10
+	const GHOST		;11
+	const FAIRY		;12
 TYPES_END EQU const_value
 
 if DEF(PSS)

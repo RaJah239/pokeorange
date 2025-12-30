@@ -7,9 +7,11 @@ BUILD_DAY   := $(shell date +%d)
 BUILD_MONTH := $(shell date +%m)
 BUILD_YEAR  := $(shell date +%y)
 
-GIT_VERSION := "$(shell git describe --abbrev=7 --always)"
+GIT_VERSION := $(shell git describe --abbrev=7 --always)
 
-$(info $$GIT_VERSION = $(GIT_VERSION))
+$(info  )
+$(info $$BUILD_VERSION = $(BUILD_DAY)$(BUILD_MONTH)$(BUILD_YEAR)-$(GIT_VERSION))
+$(info  )
 
 ifneq ($(wildcard rgbds/.*),)
 RGBDS_DIR = rgbds/

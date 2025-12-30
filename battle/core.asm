@@ -5889,8 +5889,10 @@ LoadEnemyMon: ; 3e8eb
 	ld [CurSpecies], a
 	ld [CurPartySpecies], a
 
-	farcall StrictForm ;is this really needed with form code fixed // should this be handled in the form code???
-
+	;This functions handles the trainer PV and generates one for wild pokémon
+	;Also forces specific Pokémon to have a certain form using map and mapgroup (i.e. crystal Onyx, Vulpix/Sandlash, shiny Politoed...)
+	farcall LoadEnemyMonForm
+	
 	ld a, [EnemyMonPersonality]
 	ld [TempMonForm], a
 	ld a, [TempEnemyMonSpecies]
@@ -6226,13 +6228,6 @@ LoadEnemyMon: ; 3e8eb
 	ld a, [wBattleMode]
 	cp TRAINER_BATTLE
 	jp z, .TrainerPersonality
-
-; Wild personality
-	call GetWildPersonality
-	ld a, b
-	ld [EnemyMonPersonality], a
-	ld [TempMonForm], a
-	farcall StrictForm ;is this really needed with form code fixed // should this be handled in the form code???
 
 .clearwildmoves
 ; Clear EnemyMonMoves

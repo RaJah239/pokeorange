@@ -1,3 +1,4 @@
+;deprecated
 AssertEnemyMonType:
 	ld a, [EnemyMonPersonality]
     and FORM_MASK
@@ -115,6 +116,7 @@ AssertEnemyMonType:
 .end
 	ret
 
+;deprecated
 AssertPlayerMonType:
 	ld a, [BattleMonPersonality]
     and FORM_MASK
@@ -233,11 +235,18 @@ AssertPlayerMonType:
 .end
 	ret
 
-; Strict form typing for specific WILD Pokémon and locations. NOT for trainer battles.
-StrictForm:
+; Handles correct form for wild Pokémon and Trainer battles
+; Enforces some forms and shinyness for certain wild Pokémon
+LoadEnemyMonForm:
 	ld a, [wBattleMode]
 	cp TRAINER_BATTLE
 	jp z, .trainer
+
+	farcall GetWildPersonality
+	ld a, b
+	ld [EnemyMonPersonality], a
+	ld [TempMonForm], a
+
 	; Grab the BaseData for this species
 	ld a, [EnemyMonSpecies]
 	cp VULPIX
