@@ -32,7 +32,7 @@ UnknownText_0x1968a0:
 	cont "called TROVITO-"
 	cont "POLIS."
 
-	para "They have an huge"
+	para "They have a huge"
 	line "shopping center!"
 
 	para "You can buy TMs,"
