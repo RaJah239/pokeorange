@@ -1038,7 +1038,6 @@ MapObjectMovementPattern: ; 47dd
 ._MovementScreenShake:
 	ld d, a
 	and %00111111
-	add a
 	ld e, a
 	ld a, d
 	rlca
