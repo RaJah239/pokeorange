@@ -270,9 +270,41 @@ IvysAideScript:
 	faceplayer
 	opentext
 	writetext AideText_ExplainBalls
+	checkcode VAR_DEXCAUGHT
+	if_greater_than NUM_POKEMON - 1, .CompletedPokedex ; need all 253 mon!
 	waitbutton
 	closetext
 	end
+
+.CompletedPokedex:
+	waitbutton
+	writetext GameFreakGameDesignerCompletedPokedexText
+	playsound SFX_DEX_FANFARE_230_PLUS
+	waitsfx
+	writetext GameFreakGameDesignerPauseForDiplomaText
+	waitbutton
+	special Diploma
+	writetext GameFreakGameDesignerAfterDiplomaText
+	waitbutton
+	closetext
+	end
+
+GameFreakGameDesignerCompletedPokedexText:
+	text "Wow! Excellent!"
+	line "You completed your"
+	cont "#DEX!"
+
+	para "Congratulations!"
+	done
+
+GameFreakGameDesignerPauseForDiplomaText:
+	text "..."
+	done
+
+GameFreakGameDesignerAfterDiplomaText:
+	text "You should go show"
+	line "it to everyone!"
+	done
 
 IvysLabTravelTip1:
 	jumptext IvysLabTravelTip1Text
@@ -622,6 +654,16 @@ AideText_ExplainBalls:
 	para "Throw # BALLS"
 	line "at wild #MON"
 	cont "to get them."
+	
+	para "Come back with"
+	line "a full #DEX and"
+	cont "I'll give you a"
+	cont "diploma!"
+	
+	para "It may not sound"
+	line "like much, but"
+	cont "gives you bragging"
+	cont "rights!"
 	done
 
 IvysLabWindowText:

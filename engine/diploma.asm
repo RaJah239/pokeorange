@@ -23,7 +23,7 @@ PlaceDiplomaOnScreen: ; 1dd709
 	hlcoord 15, 5
 	call PlaceString
 	ld de, PlayerName
-	hlcoord 9, 5
+	hlcoord 10, 5
 	call PlaceString
 	ld de, .Certification
 	hlcoord 2, 8
@@ -37,17 +37,15 @@ PlaceDiplomaOnScreen: ; 1dd709
 ; 1dd760
 
 .Player:
-	db "PLAYER@"
+	db "TRAINER@"
 
 .EmptyString:
 	db "@"
 
 .Certification:
-	db   "This certifies"
-	next "that you have"
-	next "completed the"
-	next "new #DEX."
-	next "Congratulations!"
+	db   "ORANGE #DEX"
+	next "completion"
+	next "certificate."
 	db   "@"
 ; 1dd7ae
 
