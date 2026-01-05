@@ -1,17 +1,28 @@
 const_value = 1
+	const KRISSHOUSE2F_DOLL
+	const KRISSHOUSE2F_TROPHY
 
 KrissHouse2F_MapScriptHeader:
 
 .MapTriggers: db 0
 
-.MapCallbacks: db 1
+.MapCallbacks: db 2
 	dbw MAPCALLBACK_NEWMAP, .InitializeRoom
+	dbw MAPCALLBACK_OBJECTS, .ShowHideTrophy
 
 .InitializeRoom:
 	checkevent EVENT_INITIALIZED_EVENTS
 	iftrue .SkipInizialization
 	jumpstd initializeevents
 .SkipInizialization:
+	return
+
+.ShowHideTrophy:
+	disappear KRISSHOUSE2F_TROPHY
+	checkevent EVENT_BEAT_ORANGE_LEAGUE
+	iffalse .TrophyDone
+	appear KRISSHOUSE2F_TROPHY
+.TrophyDone
 	return
 
 KrissHouseRadio:
@@ -38,6 +49,9 @@ KrissHouseRadio:
 	pause 45
 	closetext
 	end
+
+OrangeTrophyScript:
+	jumptext OrangeTrophyText
 
 BigDoll:
 	jumptext BigDollText
@@ -80,6 +94,13 @@ BigDollText:
 	line "fluffy and cuddly."
 	done
 
+OrangeTrophyText:
+	text "The Orange League"
+	line "trophy."
+	
+	para "It's very shiny."
+	done
+
 KrissHouse2F_MapEventHeader:
 
 .Warps: db 1
@@ -91,5 +112,6 @@ KrissHouse2F_MapEventHeader:
 	signpost 1, 2, SIGNPOST_UP, KrissHousePC
 	signpost 1, 5, SIGNPOST_READ, KrissHouseBookshelf
 
-.PersonEvents: db 1
+.PersonEvents: db 2
 	person_event SPRITE_BIG_LAPRAS, 1, 0, SPRITEMOVEDATA_SNORLAX, 0, 0, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_SCRIPT, 0, BigDoll, -1
+	person_event SPRITE_SILVER_TROPHY,  4,  5, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, (1 << 3) | PAL_OW_BROWN, PERSONTYPE_SCRIPT, 0, OrangeTrophyScript, EVENT_TEMPORARY_1
