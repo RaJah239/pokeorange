@@ -129,17 +129,17 @@ FindNest: ; 2a01f
 
 .AppendNest: ; 2a09c
 	push de
-	push bc
+	push bc	;b is MapGroup, c is MapNumber
 	call GetWorldMapLocation ;returns the map landmark in a	
 	pop bc
 	push af ;store landmark
 
 ; check for underwater maps
-	;Mapgroup 06 Map 05 is WRECKED_SHIP_UNSUNK, doesn't use underwater tileset, but we'll consider it underwater for mon nest
+	;MapGroup 06 MapNumber 05 is WRECKED_SHIP_UNSUNK, doesn't use underwater tileset, but we'll consider it underwater for mon nest
 	ld a, b
-	cp 06
+	cp 06	; MapGroup
 	jr nz, .skipWrecked
-	ld a, c
+	ld a, c ; MapNumber
 	cp 05
 	jr z, .underWater
 .skipWrecked

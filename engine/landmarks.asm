@@ -12,6 +12,8 @@ GetLandmarkCoords: ; 0x1ca896
 	ld h, 0
 	add hl, hl
 	add hl, hl
+	ld d, 0
+	add hl, de
 	ld de, Landmarks
 	add hl, de
 	ld a, [hli]
@@ -32,7 +34,9 @@ GetLandmarkName:: ; 0x1ca8a5
 	ld h, 0
 	add hl, hl
 	add hl, hl
-	ld de, Landmarks + 2
+	ld d, 0
+	add hl, de
+	ld de, Landmarks + 3
 	add hl, de
 	ld a, [hli]
 	ld h, [hl]
@@ -53,107 +57,125 @@ GetLandmarkName:: ; 0x1ca8a5
 	ret
 ; 0x1ca8c3
 
+GetLandmarkFishGroup: ; 0x1ca896
+; Return fishgroup of landmark e in d
+
+;erase underwater/surf bitflags
+	ld a, e
+	and LANDMARK_MASK
+	ld e, a
+
+	ld l, e
+	ld h, 0
+	add hl, hl
+	add hl, hl
+	ld d, 0
+	add hl, de
+	ld de, Landmarks + 2
+	add hl, de
+	ld d, [hl]
+	ret
 
 Landmarks: ; 0x1ca8c3
 
 landmark: MACRO
-	db \1, \2
-	dw \3
+	db \1, \2, \3	; Xcoord, Ycoord, Fishgroup
+	dw \4		 	; Name pointer
 ENDM
 
-	landmark   0,   0,   SpecialMapName
-	landmark   52,  140, ValenciaIslandName
-	landmark   44,  132, Route49Name
-	landmark   28,  132, TangeloIslandName
-	landmark   20,  128, Route50Name
-	landmark   28,  124, Route51Name
-	landmark   20,  124, TangeloJungleName
-	landmark   28,  112, Route52Name
-	landmark   28,  100, MikanIslandName
-	landmark   40,  92,  Route53Name
-	landmark   52,  84,  Route54Name
-	landmark   52,  76,  MandarinNorthName
-	landmark   52,  100, SunburstIslandName
-	landmark   56,  116, Route55Name
-	landmark   52,  110, CrystalCaveName
-	landmark   72,  120, PinkanIslandName
-	landmark   92,  124, Route56Name
-	landmark   108, 124, Fukuhara4Name
-	landmark   116, 108, KinnowIslandName
-	landmark   136,  96, Route57Name
-	landmark   136,  80, UnnamedIsland1Name
-	landmark   148,  76, Route58Name
-	landmark   156,  76, NavelIslandName
-	landmark   158,  74, MtNavelName
-	landmark   148, 100, GrapefruitName
-	landmark   148, 108, Route59Name
-	landmark   148, 116, MoroIslandName
-	landmark   140, 124, Route60Name
-	landmark   142, 118, WreckedShipName
-	landmark   128, 128, GoldenIslandName
-	landmark   124, 140, Route61Name
-	landmark   140, 148, MurcottIslandName
-	landmark   124, 156, UnnamedIsland2Name
-	landmark   104, 144, Route62Name
-	landmark   96,  144, MandarinDesertName
-	landmark   84,  140, TrovitopolisName
-	landmark   76,  148, TrovitaIslandName
-	landmark   128,  56, CleopatraIslandName
-	landmark   152,  52, Route63Name
-	landmark   164,  36, AscorbiaIslandName
-	landmark   152,  32, Route64Name
-	landmark   148,  36, Route65Name
-	landmark   136,  32, ButwalIslandName
-	landmark   112,  32, Route66Name
-	landmark   108,  52, KumquatIslandName
-	landmark   82,   60, Route67Name
-	landmark   60,   60, RindIslandName
-	landmark   44,   60, Route68Name
-	landmark   24,   56, UnnamedIsland3Name
-	landmark   20,   36, Route69Name
-	landmark   28,   36, VictoryRoadName
-	landmark   36,   36, PummeloIslandName
-	landmark   52,   36, Route70Name
-	landmark   64,   32, TarrocoIslandName
-	landmark   76,   36, Route71Name
-	landmark   92,   36, HamlinIslandName
-	landmark   96,   36, HamlinFieldsName
-	landmark   92,   84, ShamoutiIslandName
-	landmark   84,   92, FireIslandName
-	landmark   100,  92, IceIslandName
-	landmark   108,  84, LightningIslandName
+	landmark    0,    0, FISHGROUP_NONE, SpecialMapName
+	landmark   52,  140, FISHGROUP_OCEAN, ValenciaIslandName
+	landmark   44,  132, FISHGROUP_SHORE, Route49Name
+	landmark   28,  132, FISHGROUP_SHORE, TangeloIslandName
+	landmark   20,  128, FISHGROUP_SHORE, Route50Name
+	landmark   28,  124, FISHGROUP_SHORE, Route51Name
+	landmark   20,  124, FISHGROUP_POND, TangeloJungleName
+	landmark   28,  112, FISHGROUP_SHORE, Route52Name
+	landmark   28,  100, FISHGROUP_POND, MikanIslandName
+	landmark   40,  92,  FISHGROUP_SHORE, Route53Name
+	landmark   52,  84,  FISHGROUP_SHORE, Route54Name
+	landmark   52,  76,  FISHGROUP_SHORE, MandarinNorthName
+	landmark   52,  100, FISHGROUP_SHORE, SunburstIslandName
+	landmark   56,  116, FISHGROUP_SHORE, Route55Name
+	landmark   52,  110, FISHGROUP_POND, CrystalCaveName
+	landmark   72,  120, FISHGROUP_NONE, PinkanIslandName
+	landmark   92,  124, FISHGROUP_SHORE, Route56Name
+	landmark   108, 124, FISHGROUP_POND, Fukuhara4Name
+	landmark   116, 108, FISHGROUP_SHORE, KinnowIslandName
+	landmark   136,  96, FISHGROUP_SHORE, Route57Name
+	landmark   136,  80, FISHGROUP_SHORE, UnnamedIsland1Name
+	landmark   148,  76, FISHGROUP_SHORE, Route58Name
+	landmark   156,  76, FISHGROUP_SHORE, NavelIslandName
+	landmark   158,  74, FISHGROUP_NONE, MtNavelName
+	landmark   148, 100, FISHGROUP_SHORE, GrapefruitName
+	landmark   148, 108, FISHGROUP_SHORE, Route59Name
+	landmark   148, 116, FISHGROUP_SHORE, MoroIslandName
+	landmark   140, 124, FISHGROUP_SHORE, Route60Name
+	landmark   142, 118, FISHGROUP_SHORE, WreckedShipName
+	landmark   128, 128, FISHGROUP_SHORE, GoldenIslandName
+	landmark   124, 140, FISHGROUP_OCEAN, Route61Name
+	landmark   140, 148, FISHGROUP_POND, MurcottIslandName
+	landmark   124, 156, FISHGROUP_CONTEST, UnnamedIsland2Name
+	landmark   104, 144, FISHGROUP_OCEAN, Route62Name
+	landmark   96,  144, FISHGROUP_SHORE, MandarinDesertName
+	landmark   84,  140, FISHGROUP_SEWER, TrovitopolisName
+	landmark   76,  148, FISHGROUP_SHORE, TrovitaIslandName
+	landmark   128,  56, FISHGROUP_SHORE, CleopatraIslandName
+	landmark   152,  52, FISHGROUP_SHORE, Route63Name
+	landmark   164,  36, FISHGROUP_SHORE, AscorbiaIslandName
+	landmark   152,  32, FISHGROUP_SHORE, Route64Name
+	landmark   148,  36, FISHGROUP_SHORE, Route65Name
+	landmark   136,  32, FISHGROUP_POND, ButwalIslandName
+	landmark   112,  32, FISHGROUP_OCEAN, Route66Name
+	landmark   108,  52, FISHGROUP_SHORE, KumquatIslandName
+	landmark   82,   60, FISHGROUP_OCEAN, Route67Name
+	landmark   60,   60, FISHGROUP_RIND, RindIslandName
+	landmark   44,   60, FISHGROUP_OCEAN, Route68Name
+	landmark   24,   56, FISHGROUP_POND, UnnamedIsland3Name
+	landmark   20,   36, FISHGROUP_OCEAN, Route69Name
+	landmark   28,   36, FISHGROUP_POND, VictoryRoadName
+	landmark   36,   36, FISHGROUP_SHORE, PummeloIslandName
+	landmark   52,   36, FISHGROUP_OCEAN, Route70Name
+	landmark   64,   32, FISHGROUP_SHORE, TarrocoIslandName
+	landmark   76,   36, FISHGROUP_OCEAN, Route71Name
+	landmark   92,   36, FISHGROUP_NONE, HamlinIslandName ;Not accessible in normal gameplay, hence the FISHGROUP_NONE even if it is not in the mapheader
+	landmark   96,   36, FISHGROUP_NONE, HamlinFieldsName ;Not accessible in normal gameplay, hence the FISHGROUP_NONE even if it is not in the mapheader
+	landmark   92,   84, FISHGROUP_SHORE, ShamoutiIslandName
+	landmark   84,   92, FISHGROUP_SHORE, FireIslandName
+	landmark   100,  92, FISHGROUP_SHORE, IceIslandName
+	landmark   108,  84, FISHGROUP_SHORE, LightningIslandName
 
-	landmark   116,   28, VermilionCityName
-	landmark   138,   28, Route11Name
-	landmark   156,   36, Route12Name
-	landmark   148,   44, Route13Name
-	landmark   140,   52, Route14Name
-	landmark   132,   60, Route15Name
-	landmark   116,   60, FuchsiaCityName
-	landmark   116,   58, SafariZoneName
-	landmark   116,   72, Route19Name
-	landmark   92,   76, Route20Name
-	landmark   84,   76, SeafoamIslandsName
-	landmark   60,   76, CinnabarIslandName
-	landmark   62,   74, CinnabarVolcanoName
-	landmark   60,   64, Route21Name
-	landmark   60,   52, PalletTownName
-	landmark   42,   68, CinnabarSeaName
-	landmark   20,   60, SaydaIslandName
-	landmark   84,   64, KantoSea1Name
-	landmark   92,   52, CamomileIslandName
-	landmark   100,   36, VermilionSeaName
-	landmark   100,   92, KantoSea2Name
-	landmark   84,   92, ChrysanthemumName
-	landmark   100,   116, MetallicaIslandName
-	landmark   116,   92, KantoSea3Name
-	landmark   132,   92, WisteriaTownName
-	landmark   124,   116, HutberCityName
-	landmark   132,   128, PortaVistaName
-	landmark   116,   132, AcapulcoTownName
-	landmark   36,   116, NewIslandName
-	landmark   68,   140, RainbowIslandName
-	landmark 148, 132, FastShipName
+	landmark   116,   28, FISHGROUP_NONE, VermilionCityName
+	landmark   138,   28, FISHGROUP_NONE, Route11Name
+	landmark   156,   36, FISHGROUP_NONE, Route12Name
+	landmark   148,   44, FISHGROUP_NONE, Route13Name
+	landmark   140,   52, FISHGROUP_NONE, Route14Name
+	landmark   132,   60, FISHGROUP_NONE, Route15Name
+	landmark   116,   60, FISHGROUP_NONE, FuchsiaCityName
+	landmark   116,   58, FISHGROUP_NONE, SafariZoneName
+	landmark   116,   72, FISHGROUP_NONE, Route19Name
+	landmark   92,   76, FISHGROUP_NONE, Route20Name
+	landmark   84,   76, FISHGROUP_NONE, SeafoamIslandsName
+	landmark   60,   76, FISHGROUP_NONE, CinnabarIslandName
+	landmark   62,   74, FISHGROUP_NONE, CinnabarVolcanoName
+	landmark   60,   64, FISHGROUP_NONE, Route21Name
+	landmark   60,   52, FISHGROUP_NONE, PalletTownName
+	landmark   42,   68, FISHGROUP_NONE, CinnabarSeaName
+	landmark   20,   60, FISHGROUP_NONE, SaydaIslandName
+	landmark   84,   64, FISHGROUP_NONE, KantoSea1Name
+	landmark   92,   52, FISHGROUP_NONE, CamomileIslandName
+	landmark   100,   36, FISHGROUP_NONE, VermilionSeaName
+	landmark   100,   92, FISHGROUP_NONE, KantoSea2Name
+	landmark   84,   92, FISHGROUP_NONE, ChrysanthemumName
+	landmark   100,   116, FISHGROUP_NONE, MetallicaIslandName
+	landmark   116,   92, FISHGROUP_NONE, KantoSea3Name
+	landmark   132,   92, FISHGROUP_NONE, WisteriaTownName
+	landmark   124,   116, FISHGROUP_NONE, HutberCityName
+	landmark   132,   128, FISHGROUP_NONE, PortaVistaName
+	landmark   116,   132, FISHGROUP_NONE, AcapulcoTownName
+	landmark   36,   116, FISHGROUP_NONE, NewIslandName
+	landmark   68,   140, FISHGROUP_NONE, RainbowIslandName
+	landmark 148, 132, FISHGROUP_NONE, FastShipName
 
 
 ValenciaIslandName:  db "VALENCIA ISLAND@"
