@@ -139,7 +139,7 @@ TimeFishGroups: ; 9266f
 ; 926c7
 
 ; Goes trough all fishgroups and returns carry if the mon is fishable
-; Input: b is fishgroup and c is rod (Old - 1, Good - 2, Super - 3, Master - 4)
+; Input: b is fishgroup and c is rod (Old - 0, Good - 1, Super - 2, Master - 3)
 IsFishableMon:
 
 ;Get fishgroup
@@ -152,8 +152,7 @@ rept 9
 endr
 	inc hl
 
-;Get rod (note: Pokémon Crystal indexes rods starting at 0, here we start at 1 since we going in a loop from master to old rod and using dec c to know we are done))
-	dec c
+;Get rod (note: Pokémon Crystal indexes rods starting at 0, here we start at 1 since we going in a loop from master to old rod and using dec c to know we are done)
 	ld e, c
 	ld d, 0
 	add hl, de
@@ -225,7 +224,7 @@ endr
 
 ; Input:
 ;	b is fishgroup
-;	c is rod (Old - 1, Good - 2, Super - 3, Master - 4).
+;	c is rod ( 0, Good - 1, Super - 2, Master - 3).
 ;	hl points to the next empty landmark in the list
 ; 	Return: hl will hold the next empty landmark in the list
 _CheckAddFishgroup:
@@ -270,15 +269,16 @@ _AddFishableLandmarks:
 	ld [hli], a ;store landmark and increment pointer
 	jr .loop
 
-; Input: landmark in a
+; Input: landmark in e
 ; Goes through TileMap and checks if the landmark has already been added.
 ; If the nest is present in grass/underwater/surfing/fishing only the first one added is preserved since only one icon can appear on the map
+; returns carry if present
 _IsLandmarkPresent:
 	push hl
 	push bc
 	push de
 
-	ld b, e ; land
+	ld b, e ; landmark
 
 	ld hl, TileMap
 .loop
@@ -319,10 +319,10 @@ FindFishNest:
 
 ;Code to check all groups for a single rod
 	ld b, FISHGROUP_RIND
-	ld a, [EnemyMonUnused]
-	inc a
-	cp a, 5
-	ret nc ; Do nothing if invalid rod (a > 4)
+	ld a, [EnemyMonUnused] ;0 = wild, 1 = vine/rock, 2 = old, 3 = super, 4 = master
+	sub 2 ; convert EnemyMonUnused to rod index
+	cp a, 4
+	ret nc ; Do nothing if invalid rod (a >= 4)
 	ld c, a
 .groupLoop
 	push bc

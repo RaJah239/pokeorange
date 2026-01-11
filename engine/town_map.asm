@@ -639,11 +639,27 @@ _Area: ; 91d11
 	ld hl, VTiles0 tile $7c
 	lb bc, BANK(DexMapNestIconGFX), 1
 	call Request2bpp
+
+	ld de, DexMapNestVineIconGFX
+	ld hl, VTiles0 tile $6e
+	lb bc, BANK(DexMapNestIconGFX), 1
+	call Request2bpp
+	
+	ld de, DexMapNestRockIconGFX
+	ld hl, VTiles0 tile $6f
+	lb bc, BANK(DexMapNestIconGFX), 1
+	call Request2bpp
 	
 	ld de, DexMapNestLabelsGFX
 	ld hl, VTiles0 tile $d0
-	lb bc, BANK(DexMapNestLabelsGFX), 18
+	lb bc, BANK(DexMapNestLabelsGFX), 23
 	call Request2bpp
+	
+	;Reload the "?" character in another position
+	ld de, Font tile $56 ; "?" char
+    ld hl, VTiles0 tile $BF
+    lb bc, BANK(Font), 1
+    call Request2bpp
 
 	call .GetPlayerOrFastShipIcon
 	ld hl, VTiles0 tile $78
@@ -666,8 +682,8 @@ _Area: ; 91d11
 	xor a
 	ld [hBGMapMode], a
 	
-	ld a, 4; Start with wild mon
-	call .UpdateRodIcons
+	xor a; Start with wild mon
+	call .GetAndPlaceNestOnBoot
 	
 ;	xor a ; Orange
 ;	call .GetAndPlaceNest ; called within .UpdateRodIcons
@@ -706,7 +722,7 @@ _Area: ; 91d11
 
 ; 91d9b
 
-.LeftRightInput: ; 91d9b
+.LeftRightInput: ; Instead of changing between Orange and Kanto maps, this changes nest type
 	ld a, [hl]
 	and D_LEFT
 	jr nz, .left
@@ -716,70 +732,44 @@ _Area: ; 91d11
 	ret
 
 .left
-
 	ld a, [EnemyMonUnused]
+	cp 6
+	ret z
 	dec a
 	cp -1
-	jr nz, .UpdateRodIcons
+	ld b, -1 ;backwards indicator
+	jr nz, .reloadMap
 	ld a, 4
-	jr .UpdateRodIcons
-
-	ld a, [hWY]
-	cp $90
-	ret z
-	call ClearSprites
-	ld a, $90
-	ld [hWY], a
-	xor a ; Orange
-	jp .GetAndPlaceNest
+	jr .reloadMap
+	
+	;ld a, [hWY]
+	;cp $90
+	;ret z
+	;call ClearSprites
+	;ld a, $90
+	;ld [hWY], a
+	;xor a ; Orange
+	;jp .GetAndPlaceNest
 
 .right
-	;there's no kanto, so we do nothing, we use the Rigth button to toogle rods
 	ld a, [EnemyMonUnused]
+	cp 6
+	ret z
 	inc a
-	cp 5
-	jr nz, .UpdateRodIcons
+	cp 6
+	ld b, 1 ;frontwards indicator
+	jr nz, .reloadMap
 	xor a
-.UpdateRodIcons
+.reloadMap
 	ld [EnemyMonUnused], a
-	push hl
-	push af
-
-	call DisableLCD
-	pop af
-	ld b, a
-
-	xor a
-	ld de, .oldRodLabel
-	cp b
-	jr z, .writeLabel
-	inc a
-	ld de, .goodRodLabel
-	cp b
-	jr z, .writeLabel
-	inc a
-	ld de, .superRodLabel
-	cp b
-	jr z, .writeLabel
-	inc a
-	ld de, .masterRodLabel
-	cp b
-	jr z, .writeLabel
-	ld de, .wildLabel
-.writeLabel
-	hlbgcoord 13, 0
-	call PlaceString
 	
-	call EnableLCD
-	
+	push bc
 	call ClearSprites
-	ld a, $90
-	ld [hWY], a
+	pop bc
+	;ld a, $90
+	;ld [hWY], a
 	xor a ; Orange
-	call .GetAndPlaceNest
-
-	pop hl
-	ret
+	jp .GetAndPlaceNest
 
 	; Kanto map is only available after entering the hall of fame
 	; Unused
@@ -796,19 +786,25 @@ _Area: ; 91d11
 ;	jp .GetAndPlaceNest
 
 .oldRodLabel
-	db $d3, $d4, $d5, $d6, $df, $d8, $7f, "@"
+	db $d3, $d4, $d5, $d6, $e5, $d6, $7f, "@"
     
 .goodRodLabel
 	db $d3, $d4, $d7, $d8, $df, $d8, $7f, "@"
 	
 .superRodLabel
-	db $d3, $d4, $d9, $da, $db, $df, $d8, "@"
+	db $d3, $d4, $d9, $da, $db, $e5, $d6, "@"
 	
 .masterRodLabel
 	db $d3, $d4, $dc, $dd, $de, $df, $d8, "@"
 
 .wildLabel
 	db $d3, $d4, $e0, $e1, $7f, $7f, $7f, "@"
+
+.vineRockLabel
+	db $d3, $d4, $e2, $e3, $e4, $e5, $e6, "@"
+
+.notFoundLabel
+	db $d3, $d4, $7f, $7f, $bf, $7f, $7f, "@"
 
 ; 91dcd
 
@@ -848,55 +844,84 @@ _Area: ; 91d11
 	db $d0, $d1, $d2, "@"
 ; 91e1e
 
+;Only called the first time player goes to the area screen. Goes through all entries to find the first Nest type with Nests.
+.GetAndPlaceNestOnBoot:
+	ld a, [EnemyMonUnused]
+.populateOnBootLoop
+	ld [EnemyMonUnused], a
+	call _PopulateLandmarks
+	jr nc, .UpdateLabels
+	ld a, [EnemyMonUnused]
+	inc a
+	cp 6
+	jr c, .populateOnBootLoop
+	ld [EnemyMonUnused], a
+	jr .UpdateLabels
+
 .GetAndPlaceNest: ; 91e1e
 	ld [wd003], a
-	ld e, a
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	;Backup current rod, this is 0 the first time it is called (old rod)
+; GetAndPlaceNestOnBoot will handle any pokémon with no nests, so if we are here we assume it has at leas one nesting location.
 	ld a, [EnemyMonUnused]
-
-	
-	cp 4
-	jr nz, .skipWilds
-	
-	push af ;store index
-	ld a, e
-	farcall FindNest ; load nest landmarks into TileMap[0,0]
-	pop af ;restore index
+.placeNestLoop
+	push bc
 	ld [EnemyMonUnused], a
-	jr .keepGoing
+	call _PopulateLandmarks
+	pop bc
+	push af
+	ld a, b
+	cp -1
+	jr z, .backwards
+	pop af
+	ld a, [EnemyMonUnused]
+	inc a
+	jr c, .placeNestLoop
+	jr .UpdateLabels
+.backwards
+	pop af
+	ld a, [EnemyMonUnused]
+	dec a
+	jr c, .placeNestLoop
+	;fallthrough
 
-.skipWilds
-	;Clear landmark list
-	hlcoord 0, 0
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+.UpdateLabels
+;Update labels
+	call DisableLCD
+
+	ld a, [EnemyMonUnused]
+	cp 6
+	ld de, .notFoundLabel
+	jr z, .writeLabel
+	
+	ld b, a
 	xor a
-	call ByteFill
+	ld de, .wildLabel
+	cp b
+	jr z, .writeLabel
+	inc a
+	ld de, .vineRockLabel
+	cp b
+	jr z, .writeLabel
+	inc a
+	ld de, .oldRodLabel
+	cp b
+	jr z, .writeLabel
+	inc a
+	ld de, .goodRodLabel
+	cp b
+	jr z, .writeLabel
+	inc a
+	ld de, .superRodLabel
+	cp b
+	jr z, .writeLabel
+	ld de, .masterRodLabel
+.writeLabel
+	hlbgcoord 13, 0
+	call PlaceString
+	call EnableLCD
 
-	farcall FindFishNest
-
-.keepGoing
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; The following code shows grass/surf/dive pokémon + the current rod
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	;Backup current rod, this is 0 the first time it is called (old rod)
-;	ld a, [EnemyMonUnused]
-;	push af
-	
-;	ld a, e
-;	farcall FindNest ; load nest landmarks into TileMap[0,0]
-	
-;	pop af ; restore rod
-;	ld [EnemyMonUnused], a
-
-;	farcall FindFishNest
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;Process Landmarks and draw Nest icons
 	decoord 0, 0
 	ld hl, Sprites
 .nestloop
@@ -919,6 +944,9 @@ _Area: ; 91d11
 	sub 4
 	ld [hli], a
 
+	ld a, [EnemyMonUnused]
+	cp 1
+	jr z, .vineRock
 	pop af ;restore landmark
 	and WILD_LANDMARK_MASK ;keep only type of landmark
 	ld d, a
@@ -934,6 +962,21 @@ _Area: ; 91d11
 	ld a, $7c
 	jr z, .placeNestIcon
 	ld a, $7f ; nest icon in this context
+	jr .placeNestIcon
+
+.vineRock
+	pop af ;restore landmark
+	and WILD_LANDMARK_MASK ;keep only type of landmark
+	ld d, a
+	cp WILD_VINE_MAP_MASK
+	ld a, $6e
+	jr z, .placeNestIcon
+	ld a, d
+	cp WILD_ROCK_MAP_MASK
+	ld a, $6f
+	jr z, .placeNestIcon
+	ld a, $7f ; nest icon in this context
+
 
 .placeNestIcon
 	ld [hli], a
@@ -1051,6 +1094,43 @@ _Area: ; 91d11
 	ld b, BANK(FastShipGFX)
 	ret
 ; 91ee4
+
+; Clears landmark list, then populates it with current Nest type from [EnemyMonUnused]
+; Return: carry if no landmark was added
+_PopulateLandmarks:
+
+	;Clear landmark list
+	hlcoord 0, 0
+	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
+	xor a
+	call ByteFill
+
+	ld a, [EnemyMonUnused]
+	and a
+	jr nz, .VineRock
+
+	;Search Orange islands wild nests
+	ld a, [EnemyMonUnused] ;backup the contents as FindNest uses this ram address as temp variable
+	push af
+	ld a, [wd003] ;Map to search, in Orange this is always 0 since there's only one map
+	ld e, a
+	farcall FindNest ; load nest landmarks into TileMap[0,0]
+	pop af
+	ld [EnemyMonUnused], a ;restore
+	jr .done
+.VineRock
+	ld a, [EnemyMonUnused]
+	cp 1
+	jr nz, .isRod
+	farcall FindTreeRockNest ; append Tree Headbutt and Rock Smash landmarks
+	jr .done
+.isRod
+	farcall FindFishNest
+
+.done
+	ld a, [TileMap]
+	cp 1
+	ret
 
 TownMapBGUpdate: ; 91ee4
 ; Update BG Map tiles and attributes
@@ -1274,6 +1354,12 @@ INCBIN "gfx/town_map/dexmap_nest_surf_icon.2bpp"
 
 DexMapNestFishIconGFX:
 INCBIN "gfx/town_map/dexmap_nest_fish_icon.2bpp"
+
+DexMapNestVineIconGFX:
+INCBIN "gfx/town_map/dexmap_nest_vine_icon.2bpp"
+
+DexMapNestRockIconGFX:
+INCBIN "gfx/town_map/dexmap_nest_rock_icon.2bpp"
 
 DexMapNestLabelsGFX:
 INCBIN "gfx/town_map/dexmap_nest_labels.2bpp"

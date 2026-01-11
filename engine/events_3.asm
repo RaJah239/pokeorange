@@ -470,7 +470,7 @@ GetTreeMons: ; b82d2
 ; Return the address of TreeMon table a in hl.
 ; Return nc if table a doesn't exist.
 
-	cp 9
+	cp 9		; if table index is >= 9
 	jr nc, .quit
 
 	and a
@@ -494,30 +494,36 @@ GetTreeMons: ; b82d2
 	ret
 ; b82e8
 
-TreeMons: ; b82e8
-	dw TreeMons1
-	dw TreeMons1
-	dw TreeMons2
-	dw TreeMons3
-	dw TreeMons4
-	dw TreeMons5
-	dw RockMons1
-	dw RockMons2
-	dw RockMons3
+; Note: if more sets are added to the table, GetTreeMons needs to be updated
 
-; Two tables each (normal, rare).
+TreeMons: ; b82e8
+	dw TreeMons_None	;0
+	dw TreeMons1		;1
+	dw TreeMons2		;2
+	dw TreeMons3		;3
+	dw TreeMons4		;4
+	dw TreeMons5		;5
+	dw RockMons1		;6
+	dw RockMons2		;7
+	dw RockMons3		;8
+
+; Two tables each (common, rare).
 ; Structure:
 ;	db  %, species, level
 
-TreeMons1: ; b82fa
+TreeMons_None:
+; no encounter data
+
+TreeMons1:
+;common
 	db 50, KAKUNA,      20
 	db 15, SPEAROW,     20
-	db 15, PIKIPEK,      20
+	db 15, PIKIPEK,     20
 	db 10, BEEDRILL,    20
 	db  5, MANKEY,      20
 	db  5, LICKITUNG,   20
 	db -1
-
+;rare
 	db 50, KAKUNA,      20
 	db 15, SPEAROW,     20
 	db 15, PIKIPEK,     20
@@ -526,7 +532,8 @@ TreeMons1: ; b82fa
 	db  5, MUNCHLAX,    20
 	db -1
 
-TreeMons2: ; b8320
+TreeMons2:
+;common
 	db 50, VENONAT,     30
 	db 15, SPEAROW,     30
 	db 15, TRUMBEAK,    30
@@ -534,7 +541,7 @@ TreeMons2: ; b8320
 	db  5, MANKEY,      30
 	db  5, LICKITUNG,   30
 	db -1
-
+; rare
 	db 50, VENONAT,     30
 	db 15, SPEAROW,     30
 	db 15, TRUMBEAK,    30
@@ -543,7 +550,8 @@ TreeMons2: ; b8320
 	db  5, MUNCHLAX,    30
 	db -1
 
-TreeMons3: ; b8346
+TreeMons3:
+;common
 	db 50, VENOMOTH,    40
 	db 15, FEAROW,      40
 	db 15, TRUMBEAK,    40
@@ -551,7 +559,7 @@ TreeMons3: ; b8346
 	db  5, PRIMEAPE,    40
 	db  5, LICKITUNG,   40
 	db -1
-
+; rare
 	db 50, VENOMOTH,    40
 	db 15, FEAROW,      40
 	db 15, TRUMBEAK,    40
@@ -560,7 +568,8 @@ TreeMons3: ; b8346
 	db  5, MUNCHLAX,    40
 	db -1
 
-TreeMons4: ; b836c
+TreeMons4:
+;common
 	db 50, VENOMOTH,    50
 	db 15, TRUMBEAK,    50
 	db 15, TOUCANNON,   50
@@ -568,7 +577,7 @@ TreeMons4: ; b836c
 	db  5, PRIMEAPE,    50
 	db  5, LICKITUNG,   50
 	db -1
-
+; rare
 	db 50, VENOMOTH,    50
 	db 15, SPEAROW,     50
 	db 15, FEAROW,      50
@@ -577,7 +586,16 @@ TreeMons4: ; b836c
 	db  5, MUNCHLAX,    50
 	db -1
 
-TreeMons5: ; b8392
+TreeMons5:
+;common
+	db 50, PIDGEOTTO,   55
+	db 15, FEAROW,      55
+	db 15, BEEDRILL,    55
+	db 10, BUTTERFREE,  55
+	db  5, PRIMEAPE,    55
+	db  5, PIDGEOT,     55
+	db -1
+; rare
 	db 50, PIDGEOTTO,   55
 	db 15, FEAROW,      55
 	db 15, BEEDRILL,    55
@@ -586,29 +604,20 @@ TreeMons5: ; b8392
 	db  5, PIDGEOT,     55
 	db -1
 
-	db 50, PIDGEOTTO,   55
-	db 15, FEAROW,      55
-	db 15, BEEDRILL,    55
-	db 10, BUTTERFREE,  55
-	db  5, PRIMEAPE,    55
-	db  5, PIDGEOT,     55
-	db -1
-
-RockMons1: ; b83b8
+RockMons1:
 	db 90, KRABBY,     30
 	db 10, SHUCKLE,    30
 	db -1
 
-RockMons2: ; b83de
+RockMons2:
 	db 90, KRABBY,     30
 	db 10, STUNFISK,   30
 	db -1
-; b83e5
 
-RockMons3: ; b83de
+RockMons3:
 	db 80, KRABBY,     30
 	db 10, STUNFISK,   30
-	db 10, SHUCKLE,   30
+	db 10, SHUCKLE,    30
 	db -1
 
 GetTreeMon: ; b83e5
@@ -763,6 +772,160 @@ GetTreeScore: ; b8443
 	ld a, [hQuotient + 3]
 	ret
 ; b84b3
+
+; Checks if a species is in any headbutt/rock smash groups
+; Input: species in b, Treemon (2) or Rockmon (1) in c, pointer to map in TreeMonMaps/RockMonMaps in hl
+; Output: carry and map's landmark in e if species is on the TreeMon/RockMon group for that map
+_IsMonInTreeRockMap:
+	
+	push bc ;store species and encounter type (tree/rock)
+	
+	ld a, [hli]
+	ld d, a ; MapGroup
+	ld a, [hli]
+	ld e, a ; MapNumber
+	push de ; MapGroup and MapNumber
+	
+	ld a, [hl] ; TreeMon set
+	
+	call GetTreeMons ; Return the address of TreeMon table a in hl. Return nc if table a doesn't exist.
+	jr nc, .notFound
+	
+	pop de ; MapGroup and MapNumber
+	pop bc ; restore species and encounter type (tree/rock)
+	push bc
+	push de
+	
+	;loop through the encounter table
+.loop
+	ld a, [hli] ; encounter rate
+	cp -1
+	jr z, .handleTerminator
+	ld a, [hli] ; species
+	cp b
+	jr z, .found
+	inc hl		; skip level, hl points to next encounter rate (or terminator)
+	jr .loop
+
+.handleTerminator
+	dec c
+	jr z, .notFound
+	jr .loop
+
+.notFound
+	pop de
+	pop bc ; restore species and encounter type
+	xor a
+	ret
+
+.found
+	pop bc ; restore MapGroup and MapNumber in bc
+	call GetWorldMapLocation ;returns the map landmark in a	
+	ld e, a
+	pop bc ; restore species and encounter type
+	scf
+	ret
+
+; Input: hl is the address to next empty spot in landmark list
+;		 e is landmark to add
+; Return: hl points to next empty spot in landmark list
+_AppendTreeRockMonLandmark:
+	push de
+	push hl
+	farcall _IsLandmarkPresent ; carry if present
+	pop hl
+	pop de
+	ret c
+	
+	ld a, c
+	and a
+	jr z, .rock
+	ld a, e
+	or WILD_VINE_MAP_MASK
+	jr .storeReturn
+.rock
+	ld a, e
+	or WILD_ROCK_MAP_MASK
+.storeReturn
+	ld [hli], a
+	ret
+
+; Loads a list of map landmarks into TileMap.
+; Used in the Pokédex area screen.
+FindTreeRockNest:
+
+	;First we find the last entry in the landmark list (ends at 0x00)
+	ld hl, TileMap
+.loop
+	ld a, [hli]
+	cp 0
+	jr z, .found
+	jr .loop
+	
+.found
+	dec hl ; hl now points to the first empty landmark, store it
+	
+	push hl
+	
+	ld a, [wNamedObjectIndexBuffer] ; current species
+	ld b, a
+
+	; Add headbutt tree landmarks
+	ld hl, TreeMonMaps
+	ld c, 2
+.treeLoop
+	ld a, [hl]
+	cp -1
+	jr z, .treeEnd
+	push hl
+	call _IsMonInTreeRockMap ; preserves bc (species and encounter type)
+	ld a, e
+	pop de
+	inc de
+	inc de
+	inc de ; de points to next entry in the TreeMonMaps table
+	pop hl ; restore last entry in landmark list
+	push de
+	ld e, a
+	call c, _AppendTreeRockMonLandmark
+	pop de
+	push hl
+	push de
+	pop hl
+	jr .treeLoop
+	
+.treeEnd
+
+	; Add rock smash landmarks
+	ld hl, RockMonMaps
+	ld c, 1
+.rockLoop
+	ld a, [hl]
+	cp -1
+	jr z, .rockEnd
+	push hl
+	call _IsMonInTreeRockMap ; preserves bc (species and encounter type)
+	ld a, e
+	pop de
+	inc de
+	inc de
+	inc de ; de points to next entry in the TreeMonMaps table
+	pop hl ; restore last entry in landmark list
+	push de
+	ld e, a
+	dec c ;this will tell _AppendTreeRockMonLandmark that this is a rock landmark
+	call c, _AppendTreeRockMonLandmark
+	inc c
+	pop de
+	push hl
+	push de
+	pop hl
+	jr .rockLoop
+	
+.rockEnd
+	pop hl
+	ret
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 LoadFishingGFX: ; b84b3
 	ld a, [rVBK]
