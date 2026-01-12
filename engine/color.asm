@@ -1572,7 +1572,7 @@ PartyMenuOBPals:
 ; yellow
 	RGB 27, 31, 27
 	RGB 31, 19, 10
-	RGB 31, 29, 00
+	RGB 31, 31, 15
 	RGB 00, 00, 00
 ; teal
 	RGB 27, 31, 27
@@ -1580,32 +1580,33 @@ PartyMenuOBPals:
 	RGB 03, 23, 21
 	RGB 00, 00, 00
 
-; ???
+UnusedBattleObjectPals: ; unreferenced
+; gray
 	RGB 31, 31, 31
 	RGB 21, 21, 21
 	RGB 13, 13, 13
 	RGB 07, 07, 07
-
+; yellow
 	RGB 31, 31, 31
 	RGB 31, 31, 07
 	RGB 31, 16, 01
 	RGB 07, 07, 07
-
+; red
 	RGB 31, 31, 31
 	RGB 31, 19, 24
 	RGB 30, 10, 06
 	RGB 07, 07, 07
-
+;green
 	RGB 31, 31, 31
 	RGB 12, 25, 01
 	RGB 05, 14, 00
 	RGB 07, 07, 07
-
+; blue
 	RGB 31, 31, 31
 	RGB 08, 12, 31
 	RGB 01, 04, 31
 	RGB 07, 07, 07
-
+; brown
 	RGB 31, 31, 31
 	RGB 24, 18, 07
 	RGB 20, 15, 03
