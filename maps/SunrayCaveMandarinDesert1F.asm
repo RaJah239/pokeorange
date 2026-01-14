@@ -46,6 +46,8 @@ InvisibleForceScript:
 	writetext RainbowWingReactsText
 	waitbutton
 	appear KECLEON_MANDARIN_DESERT_CAVE_VISIBLESPRITE
+	pause 5
+	showemote EMOTE_SHOCK, PLAYER, 10
 	writetext KecleonCryText
 	pause 15
 	cry KECLEON

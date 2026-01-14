@@ -1,18 +1,24 @@
 const_value = 1
 	const WRECKED_SHIP_SHADOW_BALL
 	const WRECKED_SHIP_MIMIKYU
+	const WRECKED_SHIP_PIKACHU
 
 WreckedShipUnsunk_MapScriptHeader::
 
 .Triggers: db 0
 
-.Callbacks: db 1
+.Callbacks: db 2
 	dbw MAPCALLBACK_NEWMAP, .InitializeDiveMap
+	dbw MAPCALLBACK_OBJECTS, .hideMimikyu
 
 .InitializeDiveMap:
 	divemap WRECKED_SHIP_UNDERWATER, 0, 0
 	return
-	
+
+.hideMimikyu
+	disappear WRECKED_SHIP_MIMIKYU
+	return
+
 WreckedShipTMShadowBall:
 	itemball TM_SHADOW_BALL
 
@@ -21,6 +27,20 @@ WreckedShipHiddenRareCandy:
 	
 MimikyuScript:
 	faceplayer
+	disappear WRECKED_SHIP_PIKACHU
+	checkcode VAR_FACING
+	if_equal RIGHT, .playerLeft
+	if_equal LEFT, .playerRight
+	pause 15
+	spriteface PLAYER, RIGHT
+	pause 15
+	spriteface PLAYER, LEFT
+	pause 15
+	spriteface PLAYER, UP
+.appearMimikyu
+	appear WRECKED_SHIP_MIMIKYU
+	pause 5
+	showemote EMOTE_SHOCK, PLAYER, 10
 	opentext
 	writetext MimikyuText
 	cry MIMIKYU
@@ -33,6 +53,23 @@ MimikyuScript:
 	reloadmapafterbattle
 	setevent EVENT_MIMIKYU_FOUGHT
 	end
+
+.playerLeft
+	pause 15
+	spriteface PLAYER, UP
+	pause 15
+	spriteface PLAYER, DOWN
+	pause 15
+	spriteface PLAYER, LEFT
+	jump .appearMimikyu
+.playerRight
+	pause 15
+	spriteface PLAYER, UP
+	pause 15
+	spriteface PLAYER, DOWN
+	pause 15
+	spriteface PLAYER, RIGHT
+	jump .appearMimikyu
 
 MimikyuText:
 	text "Khuuuuu!"
@@ -50,7 +87,8 @@ WreckedShipUnsunk_MapEventHeader::
 .BGEvents: db 1
 	signpost 20, 16, SIGNPOST_ITEM, WreckedShipHiddenRareCandy
 
-.ObjectEvents: db 2
+.ObjectEvents: db 3
 	person_event SPRITE_POKE_BALL, 21, 34, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, 0, PERSONTYPE_ITEMBALL, 0, WreckedShipTMShadowBall, EVENT_WRECKED_SHIP_TM_SHADOW_BALL
-	person_event SPRITE_MIMIKYU, 7, 18, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_OW_YELLOW2, 0, 0, MimikyuScript, EVENT_MIMIKYU_FOUGHT
+	person_event SPRITE_MIMIKYU, 7, 18, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_OW_YELLOW2, 0, 0, MimikyuScript, EVENT_TEMPORARY_1
+	person_event SPRITE_PIKACHU, 7, 18, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_OW_YELLOW2, 0, 0, MimikyuScript, EVENT_MIMIKYU_FOUGHT
 

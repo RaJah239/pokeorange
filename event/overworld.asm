@@ -1605,12 +1605,30 @@ RockSmashScript: ; cf32
 
 	callasm RockMonEncounter
 	copybytetovar TempWildMonSpecies
-	iffalse .done
+	iffalse .giveScale
 	randomwildmon
 	startbattle
 	reloadmapafterbattle
+	end
+.giveScale
+	callasm _ASM_RockSmashRand
+	iffalse .done
+	opentext
+	verbosegiveitem HEART_SCALE
+	closetext
 .done
 	end
+
+_ASM_RockSmashRand:
+	xor a
+	ld [ScriptVar], a
+	call Random
+	ldh a, [hRandomAdd]
+	cp a, $40 ;25% chance
+	ret nc
+	ld a, 1
+	ld [ScriptVar], a
+	ret
 
 MovementData_0xcf55: ; 0xcf55
 	rock_smash 10

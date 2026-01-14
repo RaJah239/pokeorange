@@ -254,30 +254,39 @@ OutsideDuskPalette:
 INCLUDE "tilesets/dusk.pal"
 
 LoadSpecialMapOBPalette:
-; Handle maps with smashable rocks / strenght boulders (the only ones that use the PAL_OW_ROCK palette (OBJ07 pal)
+	; Load MapGroup and MapNumber to de
     ld a, [MapGroup]
 	ld d, a
 	ld a, [MapNumber]
 	ld e, a
+
+; Handle maps with smashable rocks / strenght boulders (the only ones that use the PAL_OW_ROCK palette (OBJ07 pal)
 	ld hl, RockBoulderMaps
-.loop
-	ld a, [hli]
-	cp -1
-	jr z, .notRockBoulderMap
-	cp d
-	inc hl
-	jr nz, .loop
-	dec hl
-	ld a, [hli]
-	cp e
-	jr nz, .loop
+	call IsMapInArray
+	jr nc, .notRockBoulderMap
 	;Map found
-	ld a, $5
+	
+	ld a, [TimeOfDay]
 	ld hl, RockBoulderOBPalette
-	ld de, UnknOBPals + PAL_OW_ROCK palettes
-	ld bc, 1 palettes
-	call FarCopyWRAM
+    cp MORN
+	jr z, .loadPal
+	cp DAY
+	ld hl, RockBoulderOBPalette + 1 palettes
+	jr z, .loadPal
+	ld hl, RockBoulderOBPalette + 2 palettes
+.loadPal
+	call LoadOB7Pal
+	jr .notCrystalCaveB1
+
 .notRockBoulderMap
+	; Check if it is the Crystal Onix map to make it teal colored
+	ld hl, OnixMap
+	call IsMapInArray
+	jr nc, .notCrystalCaveB1
+	ld hl, TealOBPalette
+	call LoadOB7Pal
+
+.notCrystalCaveB1
     ld a, [MapGroup]
 	cp GROUP_SHAMOUTI_ISLAND
     jr nz, .not_shamouti
@@ -355,10 +364,27 @@ KumquatOBPalette:
 INCLUDE "tilesets/ob_kumquat.pal"
 
 RockBoulderOBPalette:
+; morn
 	RGB 27, 31, 27
 	RGB 24, 18, 07
 	RGB 20, 15, 03
 	RGB 07, 07, 07
+; day
+	RGB 27, 31, 27
+	RGB 24, 18, 07
+	RGB 20, 15, 03
+	RGB 07, 07, 07
+; nite
+	RGB 15, 14, 24
+	RGB 12, 09, 15
+	RGB 08, 04, 05
+	RGB 00, 00, 00
+
+TealOBPalette:
+	RGB 27, 31, 27
+	RGB 31, 19, 10
+	RGB 03, 23, 21
+	RGB 00, 00, 00
 
 ; List of maps that have smashable rocks / boulders. These maps will load a different palette at OBJ07 pal, thus PAL_OW_YELLOW2 becomes unusable in those maps
 RockBoulderMaps:
@@ -371,6 +397,40 @@ RockBoulderMaps:
 	map	MANDARIN_DESERT
 	map	TARROCO_ISLAND ; for the celebi shrine
 	db -1
+
+OnixMap:
+	map CRYSTAL_CAVE_B1
+	db -1
+; Check if a map is in a map array (magroup, mapnumber) ended in 0xFF
+; Input: array in hl, MapGroup in d, MapNumber in e
+; Output: carry flag if present
+
+IsMapInArray:
+.loop
+	ld a, [hli]
+	cp -1
+	jr z, .notFound
+	cp d
+	inc hl
+	jr nz, .loop
+	dec hl
+	ld a, [hli]
+	cp e
+	jr nz, .loop
+	scf
+	ret
+.notFound
+	xor a
+	ret
+
+; Loads a palette to OB7 palette
+; Input: palette to load in hl
+
+LoadOB7Pal:
+	ld a, $5
+	ld de, UnknOBPals + PAL_OW_ROCK palettes
+	ld bc, 1 palettes
+	jp FarCopyWRAM
 
 LoadOW_BGPal7:: ; 49409
 	ld hl, Palette_TextBG7
