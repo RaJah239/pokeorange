@@ -152,6 +152,7 @@ SPRITE_POKEMON EQU const_value
 	const SPRITE_HO_OH                 ; A0
 	const SPRITE_MEOWTH                ; A1
 	const SPRITE_KECLEON               ; A2
+	const SPRITE_MIMIKYU			   ; A3
 
 const_value = $e0
 	const SPRITE_DAYCARE_MON_1         ; e0
@@ -193,6 +194,9 @@ const_value = PAL_OW_SILVER
 	const PAL_OW_GRAY   ; 05
 	const PAL_OW_YELLOW ; 06
 	const PAL_OW_TEAL   ; 07
+
+const_value = PAL_OW_ROCK
+	const PAL_OW_YELLOW2   ; 07
 
 ; sprite movement data table indices
 ; see data/map_objects.asm

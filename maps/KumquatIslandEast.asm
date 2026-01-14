@@ -215,7 +215,7 @@ KumquatIslandEast_MapEventHeader::
 	signpost  7, 17, SIGNPOST_READ, KumquatIslandSign
 
 .ObjectEvents: db 12
-	person_event SPRITE_MEOWTH, 16, 22, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_OW_TREE, 0, 0, KumquatEastMeowthScript, -1
+	person_event SPRITE_MEOWTH, 16, 22, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_OW_GRAY, 0, 0, KumquatEastMeowthScript, -1
 	person_event SPRITE_UMBRELLA, 24, 8, SPRITEMOVEDATA_UMBRELLA_LEFT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, KumquatEastUmbrellaScript, -1
 	person_event SPRITE_UMBRELLA, 24, 9, SPRITEMOVEDATA_UMBRELLA_RIGHT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, KumquatEastUmbrellaScript, -1
 	person_event SPRITE_UMBRELLA, 22, 14, SPRITEMOVEDATA_UMBRELLA_LEFT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, KumquatEastUmbrellaScript, -1

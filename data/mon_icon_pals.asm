@@ -264,8 +264,8 @@ icon_pals_forms: MACRO
 endm
 
 MenuMonIconColors_Forms::
-	icon_pals_forms ONIX, BLUE, YELLOW 		; ONIX_CRYSTAL_FORM
-	icon_pals_forms STEELIX, BLUE, YELLOW 	; STEELIX_CRYSTAL_FORM
+	icon_pals_forms ONIX, TEAL, YELLOW 		; ONIX_CRYSTAL_FORM
+	icon_pals_forms STEELIX, TEAL, YELLOW 	; STEELIX_CRYSTAL_FORM
 	icon_pals_forms EXEGGUTOR, GREEN, BROWN	; EXEGGUTOR_KANTONESE_FORM
 	icon_pals_forms GRIMER, PURPLE, GREEN	; GRIMER_KANTONESE_FORM
 	icon_pals_forms MUK, PURPLE, GREEN 		; MUK_KANTONESE_FORM

@@ -1,122 +1,130 @@
+; morn
+	;red
 	RGB 28, 31, 16
 	RGB 31, 19, 10
 	RGB 31, 07, 01
 	RGB 00, 00, 00
-
+	;blue
 	RGB 28, 31, 16
 	RGB 31, 19, 10
 	RGB 10, 09, 31
 	RGB 00, 00, 00
-
+	;green
 	RGB 28, 31, 16
 	RGB 31, 19, 10
 	RGB 07, 23, 03
 	RGB 00, 00, 00
-
+	;brown
 	RGB 28, 31, 16
 	RGB 31, 19, 10
 	RGB 15, 10, 03
 	RGB 00, 00, 00
-
+	;purple
 	RGB 28, 31, 16
 	RGB 31, 19, 10
 	RGB 18, 00, 18
 	RGB 00, 00, 00
-
+	;gray
 	RGB 31, 31, 31
 	RGB 31, 31, 31
 	RGB 13, 13, 13
 	RGB 00, 00, 00
-
+	;tree
 	RGB 28, 31, 16
 	RGB 28, 31, 16
 	RGB 05, 25, 21
 	RGB 07, 07, 07
-
+	;yellow
 	RGB 28, 31, 16
 	RGB 31, 19, 24
 	RGB 28, 31, 16
 	RGB 07, 07, 07
 
+;day
+	;red
 	RGB 27, 31, 27
 	RGB 31, 19, 10
 	RGB 31, 07, 01
 	RGB 00, 00, 00
-
+	;blue
 	RGB 27, 31, 27
 	RGB 31, 19, 10
 	RGB 10, 09, 31
 	RGB 00, 00, 00
-
+	;green
 	RGB 27, 31, 27
 	RGB 31, 19, 10
 	RGB 07, 23, 03
 	RGB 00, 00, 00
-
+	;brown
 	RGB 27, 31, 27
 	RGB 31, 19, 10
 	RGB 15, 10, 03
 	RGB 00, 00, 00
-
+	;purple
 	RGB 27, 31, 27
 	RGB 31, 19, 10
 	RGB 18, 00, 18
 	RGB 00, 00, 00
-
+	;gray
 	RGB 31, 31, 31
 	RGB 31, 31, 31
 	RGB 13, 13, 13
 	RGB 00, 00, 00
-
+	;tree
 	RGB 31, 31, 31
 	RGB 31, 31, 31
 	RGB 05, 25, 21
 	RGB 07, 07, 07
-
+	;yellow
 	RGB 27, 31, 27
 	RGB 31, 19, 24
 	RGB 27, 31, 27
 	RGB 07, 07, 07
 
+;nite
+	;red
 	RGB 15, 14, 24
 	RGB 31, 19, 10
 	RGB 31, 07, 01
 	RGB 00, 00, 00
-
+	;blue
 	RGB 15, 14, 24
 	RGB 31, 19, 10
 	RGB 10, 09, 31
 	RGB 00, 00, 00
-
+	;green
 	RGB 15, 14, 24
 	RGB 31, 19, 10
 	RGB 07, 23, 03
 	RGB 00, 00, 00
-
+	;brown
 	RGB 15, 14, 24
 	RGB 31, 19, 10
 	RGB 15, 10, 03
 	RGB 00, 00, 00
-
+	;purple
 	RGB 15, 14, 24
 	RGB 31, 19, 10
 	RGB 18, 00, 18
 	RGB 00, 00, 00
-
+	;gray
 	RGB 31, 31, 31
 	RGB 31, 31, 31
 	RGB 13, 13, 13
 	RGB 00, 00, 00
-
+	;tree
 	RGB 15, 14, 24
 	RGB 15, 14, 24
 	RGB 03, 11, 14
 	RGB 00, 00, 00
-
+	;yellow
 	RGB 15, 14, 24
 	RGB 14, 07, 17
 	RGB 15, 14, 24
 	RGB 00, 00, 00
+
+;dark
 
 	RGB 28, 31, 16
 	RGB 31, 19, 10
@@ -152,7 +160,7 @@
 	RGB 14, 20, 23
 	RGB 04, 14, 18
 	RGB 02, 08, 10
-
+	;yellow
 	RGB 31, 21, 14
 	RGB 25, 14, 18
 	RGB 31, 21, 14

@@ -704,6 +704,7 @@ SpriteMons: ; 14495
 	db HO_OH
 	db MEOWTH
 	db KECLEON
+	db MIMIKYU
 ; 144b8
 
 

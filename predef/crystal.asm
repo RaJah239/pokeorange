@@ -254,6 +254,30 @@ OutsideDuskPalette:
 INCLUDE "tilesets/dusk.pal"
 
 LoadSpecialMapOBPalette:
+; Handle maps with smashable rocks / strenght boulders (the only ones that use the PAL_OW_ROCK palette (OBJ07 pal)
+    ld a, [MapGroup]
+	ld d, a
+	ld a, [MapNumber]
+	ld e, a
+	ld hl, RockBoulderMaps
+.loop
+	ld a, [hli]
+	cp -1
+	jr z, .notRockBoulderMap
+	cp d
+	inc hl
+	jr nz, .loop
+	dec hl
+	ld a, [hli]
+	cp e
+	jr nz, .loop
+	;Map found
+	ld a, $5
+	ld hl, RockBoulderOBPalette
+	ld de, UnknOBPals + PAL_OW_ROCK palettes
+	ld bc, 1 palettes
+	call FarCopyWRAM
+.notRockBoulderMap
     ld a, [MapGroup]
 	cp GROUP_SHAMOUTI_ISLAND
     jr nz, .not_shamouti
@@ -292,11 +316,12 @@ LoadSpecialMapOBPalette:
 	ld de, UnknOBPals + PAL_OW_TREE palettes
 	ld bc, 1 palettes
 	call FarCopyWRAM
-	ld a, $5
-	ld hl, UnknBGPals + PAL_BG_BROWN palettes
-	ld de, UnknOBPals + PAL_OW_ROCK palettes
-	ld bc, 1 palettes
-	call FarCopyWRAM
+	;Suloku: disable loading OB07 Palette at dusk hour
+	;ld a, $5
+	;ld hl, UnknBGPals + PAL_BG_BROWN palettes
+	;ld de, UnknOBPals + PAL_OW_ROCK palettes
+	;ld bc, 1 palettes
+	;call FarCopyWRAM
 	scf
 	ret
 .not_outside_dusk
@@ -329,6 +354,23 @@ INCLUDE "tilesets/ob_underwater.pal"
 KumquatOBPalette:
 INCLUDE "tilesets/ob_kumquat.pal"
 
+RockBoulderOBPalette:
+	RGB 27, 31, 27
+	RGB 24, 18, 07
+	RGB 20, 15, 03
+	RGB 07, 07, 07
+
+; List of maps that have smashable rocks / boulders. These maps will load a different palette at OBJ07 pal, thus PAL_OW_YELLOW2 becomes unusable in those maps
+RockBoulderMaps:
+	map	ROUTE_56_EAST
+	map	SEVEN_GRAPEFRUITS_UNDERWATER
+	map	TANGELO_JUNGLE
+	map	TROVITA_ISLAND
+	map	UNNAMED_ISLAND_1
+	map	MT_NAVEL_1F
+	map	MANDARIN_DESERT
+	map	TARROCO_ISLAND ; for the celebi shrine
+	db -1
 
 LoadOW_BGPal7:: ; 49409
 	ld hl, Palette_TextBG7
