@@ -3803,6 +3803,7 @@ GetEnemyMonDVs: ; 3da97
 
 GetPartyMonPersonality:
 	ld hl, BattleMonPersonality
+	ret ; Always use transformed gender and pink/shiny
 	ld a, [PlayerSubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	ret z
@@ -3816,7 +3817,9 @@ GetEnemyMonPersonality:
 	ld a, [EnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	ret z
-	ld hl, wEnemyBackupPersonality
+	;ld hl, wEnemyBackupPersonality
+							   ; Should not conflict with BattleCheckEnemyShininess since that is only called when the enemy isn't transformed
+	ld hl, EnemyMonPersonality ; use copied personality, so gender, pinkness, etc are shown
 	ld a, [wBattleMode]
 	dec a
 	ret z
