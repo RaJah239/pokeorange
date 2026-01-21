@@ -4674,9 +4674,35 @@ PrintPlayerHUD: ; 3dfbf
 	pop hl
 	dec hl
 
+	; The following code handles transformed mon getting the gender symbol of what it copied
+	ld a, [PlayerSubStatus5]
+	bit SUBSTATUS_TRANSFORMED, a
+	jr z, .ok
+	; get personality to tempmon
+	ld hl, BattleMonPersonality
+	ld de, TempMonPersonality
+	ld a, [hl]
+	ld [de], a
+	;get copied species to CurPartySpecies
+	ld de, CurPartySpecies
+	ld a, [de]
+	ld b, a ;backup tempmonspecies
+	push bc
+	ld a, [BattleMonSpecies]
+	ld [de], a
 	ld a, TEMPMON
 	ld [MonType], a
 	farcall GetGender
+	pop bc
+	ld a, b
+	ld [CurPartySpecies], a
+	jr .gotGender
+
+.ok
+	ld a, TEMPMON
+	ld [MonType], a
+	farcall GetGender
+.gotGender
 	ld a, " "
 	jr c, .got_gender_char
 	ld a, "♂"
@@ -4702,7 +4728,19 @@ PrintPlayerHUD: ; 3dfbf
 .copy_level
 	ld a, [BattleMonLevel]
 	ld [TempMonLevel], a
-	jp PrintLevel
+	call PrintLevel
+
+;Shiny icon
+	ld a, [TempMonShiny]
+	and SHINY_MASK
+	ld a, " "
+	jr z, .notShiny
+	ld a, "<SHINY>"
+.notShiny
+	hlcoord 18, 8
+	ld [hl], a
+	ret
+
 ; 3e036
 
 UpdateEnemyHUD:: ; 3e036
@@ -4744,10 +4782,35 @@ DrawEnemyHUD: ; 3e043
 
 	ld hl, EnemyMonPersonality
 	ld de, TempMonPersonality
+	; The following code is disabled so transformed mon show the transformed data instead of real data
+	;ld a, [EnemySubStatus5]
+	;bit SUBSTATUS_TRANSFORMED, a
+	;jr z, .ok
+	;ld hl, wEnemyBackupPersonality
+	
+	; The following code handles transformed mon getting the gender symbol of what it copied
 	ld a, [EnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	jr z, .ok
-	ld hl, wEnemyBackupPersonality
+	; get personality to tempmon
+	ld a, [hl]
+	ld [de], a
+	;get copied species to CurPartySpecies
+	ld de, CurPartySpecies
+	ld a, [de]
+	ld b, a ;backup tempmonspecies
+	push bc
+	ld a, [EnemyMonSpecies]
+	ld [de], a
+
+	ld a, TEMPMON
+	ld [MonType], a
+	farcall GetGender
+	pop bc
+	ld a, b
+	ld [CurPartySpecies], a
+	jr .gotGender
+	
 .ok
 	ld a, [hl]
 	ld [de], a
@@ -4755,6 +4818,7 @@ DrawEnemyHUD: ; 3e043
 	ld a, TEMPMON
 	ld [MonType], a
 	farcall GetGender
+.gotGender
 	ld a, " "
 	jr c, .got_gender
 	ld a, "♂"
@@ -4762,10 +4826,10 @@ DrawEnemyHUD: ; 3e043
 	ld a, "♀"
 
 .got_gender
-	hlcoord 9, 1
+	hlcoord 8, 1
 	ld [hl], a
 
-	hlcoord 6, 1
+	hlcoord 5, 1
 	push af
 	push hl
 	ld de, EnemyMonStatus
@@ -4782,6 +4846,16 @@ DrawEnemyHUD: ; 3e043
 	ld [TempMonLevel], a
 	call PrintLevel
 .skip_level
+
+;Shiny icon
+	ld a, [TempMonShiny]
+	and SHINY_MASK
+	ld a, " "
+	jr z, .notShiny
+	ld a, "<SHINY>"
+.notShiny
+	hlcoord 9, 1
+	ld [hl], a	
 
 	ld hl, EnemyMonHP
 	ld a, [hli]
