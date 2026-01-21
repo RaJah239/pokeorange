@@ -342,7 +342,7 @@ LoadEnemyMonForm:
 	ld a, [MapNumber]
 	cp 26 ; UnnamedIsland3
 	jr nz, .done
-	ld a, [EnemyMonLevel] ;extra check, so only level 50 Politoed in this map are enforced shiny
+	ld a, [CurPartyLevel] ;extra check, so only level 50 Politoed in this map are enforced shiny
 	cp 50
 	jr nz, .done
 	ld a, [EnemyMonPersonality]
