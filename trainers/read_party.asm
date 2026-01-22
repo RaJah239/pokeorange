@@ -77,10 +77,11 @@ ReadTrainerParty: ; 39771
 	call AddNTimes
 	ld d, h
 	ld e, l
-	ld a, [de]
-	ld [TempMonPersonality], a
+	pop hl
+	push hl
 	ld a, [hli]
 	ld [de], a
+	ld [TempMonPersonality], a
 .skip
 	predef TryAddMonToParty
 	pop hl
@@ -247,7 +248,7 @@ ReadTrainerParty: ; 39771
 	; custom DVs may alter stats
 	ld a, [OtherTrainerType]
 	and TRAINERTYPE_DVS
-	jr z, .no_stat_recalc
+	;jr z, .no_stat_recalc
 	push hl
 	ld a, [OTPartyCount]
 	dec a
