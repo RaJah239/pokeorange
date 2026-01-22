@@ -432,19 +432,19 @@ DexEntryScreen_MenuActionJumptable: ; 402f2
 	ld hl, wDexMonPersonality
 	jr z, .ShinyToggle
 	
-	ld a, [MonVariant]
-	ld b, a
-	
 ;check mon that have more than 2 forms
-	;Meowth 3 forms
-	;Lycanroc 3 forms
+	;Meowth 3 forms (handled by IsThreeFormMon)
+	;Raticate 3 forms (handled by IsThreeFormMon)
+	;Lycanroc 3 forms (handled by IsThreeFormMon)
 	;Magikarp 14 forms
 	;Spinda 26 forms
+	push hl
+	farcall IsThreeFormMon
+	pop hl
+	ld a, [MonVariant]
+	ld b, a
+	jr c, .ThreeFormMon
 	ld a, [CurPartySpecies]
-	cp MEOWTH
-	jr z, .meowth_lycanroc
-	cp LYCANROC
-	jr z, .meowth_lycanroc
 	cp SPINDA
 	jr z, .spinda
 	cp MAGIKARP
@@ -457,7 +457,7 @@ DexEntryScreen_MenuActionJumptable: ; 402f2
 	jr nz, .nextForm
 	ld a, 26
 	jr .nextForm
-.meowth_lycanroc
+.ThreeFormMon
 	ld a, b
 	dec a
 	jr nz, .nextForm

@@ -1910,9 +1910,11 @@ _GetBattleRandomPersonality: ;tag to call from core.asm, which uses BattleRandom
 	
 .forceForm1 ;currently unused, but I'll leave the syntax here
 	ld a, 01
+	ld c, a
 	jr .handle_lycanroc
 .forceForm2
 	ld a, 02
+	ld c, a
 	;;fallthrough
 
 ; Handle lycanroc's form

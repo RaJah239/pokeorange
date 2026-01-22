@@ -101,6 +101,10 @@ GetMonPalettePointer:
 	jp z, .steelix
 	cp POLIWRATH
 	jp z, .poliwrath
+	cp ARBOK
+	jp z, .arbok
+	cp VICTREEBEL
+	jp z, .victreebel
 	cp EXEGGUTOR
 	jp z, .exeggutor
 	cp GRIMER
@@ -168,6 +172,26 @@ GetMonPalettePointer:
 	and FORM_MASK
 	cp POLIWRATH_TAD_FORM
 	ld hl, PoliwrathTadPalettes
+	jp z, .ok
+	pop af
+	jp .continue
+
+.arbok
+	push af
+	ld a, [bc]
+	and FORM_MASK
+	cp ARBOK_ROCKET_FORM
+	ld hl, ArbokRocketPalettes
+	jp z, .ok
+	pop af
+	jp .continue
+
+.victreebel
+	push af
+	ld a, [bc]
+	and FORM_MASK
+	cp VICTREEBEL_ROCKET_FORM
+	ld hl, VictreebelRocketPalettes
 	jp z, .ok
 	pop af
 	jp .continue
@@ -298,6 +322,9 @@ GetMonPalettePointer:
 	and FORM_MASK
 	cp RATICATE_KANTONESE_FORM
 	ld hl, RaticateKantonesePalettes
+	jp z, .ok
+	cp RATICATE_ROCKET_FORM
+	ld hl, RaticateRocketPalettes
 	jp z, .ok
 	pop af
 	jp .continue
