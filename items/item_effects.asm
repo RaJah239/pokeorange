@@ -1231,6 +1231,9 @@ Magmarizer:
 Electirizer:
 Protector: ; ee0f
 KantoStone:
+KingsRock:
+MetalCoat:
+DragonScale:
 	ld b, PARTYMENUACTION_EVO_STONE
 	call UseItem_SelectMon
 
@@ -2892,7 +2895,6 @@ QuickClaw:
 SoftSand:
 SharpBeak:
 PoisonBarb:
-KingsRock:
 Tinymushroom:
 BigMushroom:
 Silverpowder:
@@ -2921,10 +2923,8 @@ Stardust:
 StarPiece:
 Charcoal:
 ScopeLens:
-MetalCoat:
 DragonFang:
 Leftovers:
-DragonScale:
 BerserkGene:
 FlowerMail:
 LightBall:
