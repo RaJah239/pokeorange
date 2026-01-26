@@ -1114,3 +1114,8 @@ _OakText5::
 	para "That's why I study"
 	line "#MON every day."
 	prompt
+
+_HardModeText::
+	text "Would you like to"
+	line "enable HARD MODE?"
+	prompt

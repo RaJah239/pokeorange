@@ -13,6 +13,7 @@
 	
 	;StatusFlags
 	const ENGINE_POKEDEX
+	const ENGINE_HARDMODE
 	const ENGINE_POKERUS
 	const ENGINE_EXP_ALL
 	const ENGINE_CREDITS_SKIP

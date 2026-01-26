@@ -6198,8 +6198,22 @@ LoadEnemyMon: ; 3e8eb
 	ld [EnemyMonLevel], a
 ; Fill stats
 	ld de, EnemyMonMaxHP
+	
+	;only use stat exp in trainer battles
+	ld a, [wBattleMode]
+	dec a
 	ld b, FALSE
 	ld hl, EnemyMonDVs - (MON_DVS - MON_STAT_EXP + 1) ; LinkBattleRNs + 7 ; ?
+	jr z, .not_trainer ; wBattleMode is 1 for wild battles, so if it becomes zero after decreasing it was a trainer battle
+	ld a, [StatusFlags]
+	bit 1, a ; hard mode
+	jr z, .not_trainer ;don't use stat exp unless hard mode is enabled
+	ld a, [wCurPartyMon]
+	ld hl, OTPartyMon1StatExp
+	call GetPartyLocation
+	ld b, TRUE ; use stat EXP!
+.not_trainer
+
 	predef CalcPkmnStats
 
 ; If we're in a trainer battle,

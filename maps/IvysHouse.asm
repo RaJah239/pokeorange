@@ -85,6 +85,68 @@ CharityWinLoss:
 	text "Good battle!"
 	done
 
+Grace:
+	faceplayer
+	opentext
+	writetext GraceText
+	waitbutton
+	checkflag ENGINE_HARDMODE
+	iftrue .disableHard
+	writetext GraceEnableHardText
+	yesorno
+	iffalse .dontChange
+	setflag ENGINE_HARDMODE
+	writetext GraceDoneText
+	jump .finish
+.disableHard
+	writetext GraceDisableHardText
+	yesorno
+	iffalse .dontChange
+	clearflag ENGINE_HARDMODE
+	writetext GraceDoneText
+	jump .finish
+.dontChange
+	writetext GraceComeBackText
+.finish
+	waitbutton
+	closetext
+	end
+
+GraceText:
+	text "GRACE: Hello"
+	line "<PLAYER>!"
+	done
+
+GraceEnableHardText:
+	text "Having an easy"
+	line "time?"
+
+	para "If you'd like, I"
+	line "can enable HARD"
+	cont "MODE for you."
+	done
+
+GraceDisableHardText:
+	text "Having a hard"
+	line "time?"
+
+	para "If you'd like, I"
+	line "can disable HARD"
+	cont "MODE for you."
+	done
+
+GraceDoneText:
+	text "Done, have fun!"
+	done
+
+GraceComeBackText:
+	text "Ok, we'll keep it"
+	line "that way."
+
+	para "Come back any"
+	line "time!"
+	done
+
 IvysHouse_MapEventHeader::
 
 .Warps: db 2
@@ -97,6 +159,7 @@ IvysHouse_MapEventHeader::
 	signpost 1, 2, SIGNPOST_READ, IvysHouseBookshelf
 	signpost 1, 3, SIGNPOST_READ, IvysHouseBookshelf
 
-.ObjectEvents: db 2
+.ObjectEvents: db 3
 	person_event SPRITE_SCIENTIST_F, 3, 4, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_OW_PURPLE, PERSONTYPE_SCRIPT, 0, Charity, -1
 	person_event SPRITE_SCIENTIST_F, 2, 0, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_OW_PURPLE, PERSONTYPE_SCRIPT, 0, Faith, -1
+	person_event SPRITE_SCIENTIST_F,  5,  0, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_OW_PURPLE, PERSONTYPE_SCRIPT, 0, Grace, -1
