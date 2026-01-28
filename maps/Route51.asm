@@ -16,20 +16,20 @@ Route51_MapScriptHeader:
 
 Route51HideCrossCallback:
 	checkevent EVENT_MARSHADOW_HOOH_EVENT_STARTED
-	iffalse .return
+	iffalse .hideall
 	;now check if the player has the Rainbow Wing (this is reliable since it is now impossible to put the Rainbow Wing in the PC)
 	checkitem RAINBOW_WING
 	iftrue .hidecross ; if the player has the Rainbow Wing, Cross has already been battled
-	checkevent EVENT_ROUTE51_HO_OH_FOUGHT
-	iftrue .return
-	appear ROUTE51_HO_OH
-	return
-.hidecross ;in this branch we a
+	return ; event started and cross not battled, so don't hide anything
+	
+.hidecross ;in this branch we got the Rainbow Wing back, so we have battled Cross
 	disappear ROUTE51_CROSS
 	checkevent EVENT_ROUTE51_HO_OH_FOUGHT
-	iftrue .return
+	iftrue .hideall
 	appear ROUTE51_HO_OH
-.return
+	return
+
+.hideall
 	disappear ROUTE51_CROSS
 	disappear ROUTE51_HO_OH
 	return
